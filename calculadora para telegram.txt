@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow">
+<title>Calculadora de Precio Promedio & Stop Loss</title>
+
+<script>
+/* 🔐 Protección por contraseña simple */
+const acceso = prompt("Introduce la clave de acceso:");
+if (acceso !== "MewTrader2025") {
+  document.write("<body style='background:#0b0f13;color:#ff6a6a;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;'><h2>⛔ Acceso denegado</h2></body>");
+  throw new Error("Acceso no autorizado");
+}
+</script>
+
+<style>
+:root{--bg:#0b0f13;--card:#121822;--muted:#7b8aa0;--fg:#e8eef7;--accent:#3aa9ff;--accent-2:#7cffb2;--danger:#ff5a7d;--ok:#7dffcf}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#0b0f13 0%,#0d1219 100%);color:var(--fg);display:flex;align-items:center;justify-content:center;padding:24px}
+.app{width:100%;max-width:980px}.title{font-size:clamp(20px,2.6vw,28px);font-weight:800;letter-spacing:.2px;margin:0 0 14px;display:flex;gap:10px;align-items:center}
+.subtitle{color:var(--muted);margin:0 0 22px;font-size:14px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.card{grid-column:span 12;background:linear-gradient(180deg,#0f1520 0%,#0e141d 100%);border:1px solid #1a2230;border-radius:16px;padding:18px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+@media(min-width:860px){.card.half{grid-column:span 6}}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:8px}label{font-size:12px;color:var(--muted);letter-spacing:.3px}
+input[type=number]{appearance:textfield}input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{appearance:none;margin:0}
+.input{background:#0b111a;border:1px solid #1b2636;border-radius:12px;padding:12px 12px;font-size:14px;color:var(--fg);outline:none;transition:.15s}
+.input:focus{border-color:#2c74ff;box-shadow:0 0 0 3px rgba(60,140,255,.15)}.pair{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.tag{font-size:12px;color:#a7b4c9;background:#0f1724;border:1px solid #1a2436;padding:6px 10px;border-radius:999px}
+.weights{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#0c1320;border:1px solid #182235;color:#c6d3e8;border-radius:999px;padding:6px 10px;font-size:12px}
+.result{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px dashed #223049;border-radius:12px;background:linear-gradient(180deg,#0b1119 0%,#0c1118 100%)}
+.res-title{font-size:12px;color:var(--muted)}.res-value{font-variant-numeric:tabular-nums;letter-spacing:.3px;font-weight:700}
+.accent{color:var(--accent)}.good{color:var(--accent-2)}.bad{color:var(--danger)}.footer{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{cursor:pointer;border:1px solid #1b2636;background:#0f1724;color:#dbe6f7;border-radius:12px;padding:10px 14px;font-weight:600;letter-spacing:.2px}
+button:hover{border-color:#2c74ff;box-shadow:0 0 0 3px rgba(60,140,255,.12)}.muted{color:var(--muted)}.mono{font-family:ui-monospace,monospace}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <h1 class="title">Calculadora de Precio Promedio & Stop Loss</h1>
+  <p class="subtitle">Entradas escalonadas <strong>15% / 30% / 55%</strong>. Calcula precio medio y SL para LONG/SHORT según capital, apalancamiento y riesgo máximo.</p>
+  <div class="grid">
+    <section class="card half">
+      <h3 style="margin:0 0 12px">Parámetros</h3>
+      <div class="row" style="margin-bottom:10px">
+        <div class="field"><label>Capital total (USD)</label><input id="capital" class="input" type="number" value="100"></div>
+        <div class="field"><label>Apalancamiento (x)</label><input id="lev" class="input" type="number" value="20"></div>
+      </div>
+      <div class="row" style="margin-bottom:10px">
+        <div class="field"><label>Riesgo máximo (%)</label><input id="risk" class="input" type="number" value="20"></div>
+        <div class="field"><label>Pesos fijos</label><div class="weights"><span class="pill">15%</span><span class="pill">30%</span><span class="pill">55%</span></div></div>
+      </div>
+      <div class="row"><div class="field"><label>Entrada 1 (15%)</label><input id="p1" class="input" type="number" value="100000"></div><div class="field"><label>Entrada 2 (30%)</label><input id="p2" class="input" type="number" value="98500"></div></div>
+      <div class="row" style="margin-top:10px"><div class="field"><label>Entrada 3 (55%)</label><input id="p3" class="input" type="number" value="96800"></div><div class="field"><label>Riesgo en USD</label><div class="result"><span class="res-title">Riesgo</span><span id="riskUsd" class="res-value bad mono">$0.00</span></div></div></div>
+      <div class="footer"><button id="reset">Restablecer</button><button id="copy">Copiar resultados</button></div>
+    </section>
+
+    <section class="card half">
+      <h3 style="margin:0 0 12px">Resultados</h3>
+      <div class="row" style="margin-bottom:10px">
+        <div class="field"><label>Precio promedio</label><div class="result"><span class="res-title">USD por unidad</span><span id="avg" class="res-value accent mono">—</span></div></div>
+        <div class="field"><label>Tamaño de posición</label><div class="result"><span class="res-title">Nominal</span><span id="pos" class="res-value mono">—</span></div></div>
+      </div>
+      <div class="row" style="margin-bottom:10px">
+        <div class="field"><label>Cantidad total</label><div class="result"><span class="res-title">Nominal/Promedio</span><span id="qty" class="res-value mono">—</span></div></div>
+        <div class="field"><label>Pérdida por unidad</label><div class="result"><span class="res-title">RiesgoUSD / Qty</span><span id="lossPer" class="res-value bad mono">—</span></div></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Stop Loss (LONG)</label><div class="result"><span class="res-title">Promedio − pérdida</span><span id="slLong" class="res-value bad mono">—</span></div></div>
+        <div class="field"><label>Stop Loss (SHORT)</label><div class="result"><span class="res-title">Promedio + pérdida</span><span id="slShort" class="res-value bad mono">—</span></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const fmtUSD=v=>isFinite(v)?new Intl.NumberFormat('es-ES',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v):'—';
+const fmtBTC=v=>isFinite(v)?new Intl.NumberFormat('es-ES',{minimumFractionDigits:6,maximumFractionDigits:8}).format(v):'—';
+const out={avg:$('avg'),pos:$('pos'),qty:$('qty'),lossPer:$('lossPer'),slLong:$('slLong'),slShort:$('slShort'),riskUsd:$('riskUsd')};
+
+function calc(){
+  const capital=+$('capital').value||0,lev=Math.max(1,+$('lev').value||0),riskPct=Math.max(0,+$('risk').value||0);
+  const p1=+$('p1').value||0,p2=+$('p2').value||0,p3=+$('p3').value||0;
+  if(!(p1>0&&p2>0&&p3>0&&capital>0&&lev>=1)){Object.values(out).forEach(e=>e.textContent='—');return;}
+  const pesos=[0.15,0.30,0.55],montos=pesos.map(p=>capital*p),qtys=[montos[0]/p1,montos[1]/p2,montos[2]/p3];
+  const totalQty=qtys.reduce((a,b)=>a+b,0),avg=capital/totalQty,nominal=capital*lev,qtyNom=nominal/avg;
+  const riskUsd=capital*(riskPct/100),lossPerBTC=riskUsd/qtyNom,slLong=avg-lossPerBTC,slShort=avg+lossPerBTC;
+  out.avg.textContent=fmtUSD(avg);out.pos.textContent=fmtUSD(nominal);out.qty.textContent=fmtBTC(qtyNom);
+  out.lossPer.textContent=fmtUSD(lossPerBTC);out.slLong.textContent=fmtUSD(slLong);out.slShort.textContent=fmtUSD(slShort);out.riskUsd.textContent=fmtUSD(riskUsd);
+}
+['capital','lev','risk','p1','p2','p3'].forEach(id=>$(id).addEventListener('input',calc));
+$('reset').addEventListener('click',()=>{$('capital').value=100;$('lev').value=20;$('risk').value=20;$('p1').value=100000;$('p2').value=98500;$('p3').value=96800;calc();});
+$('copy').addEventListener('click',async()=>{const txt=`Promedio: ${out.avg.textContent}\\nSL LONG: ${out.slLong.textContent}\\nSL SHORT: ${out.slShort.textContent}\\nNominal: ${out.pos.textContent}\\nQty: ${out.qty.textContent}\\nRiesgo USD: ${out.riskUsd.textContent}`;await navigator.clipboard.writeText(txt);alert('Resultados copiados.');});
+calc();
+})();
+</script>
+</body>
+</html>
