@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="robots" content="noindex,nofollow">
-<title>Calculadora de Precio Promedio & Stop Loss</title>
+<title>Mew Trader_ESP · Calculadora de Precio Promedio & Stop Loss</title>
 
 <script>
 /* 🔐 Protección por contraseña simple */
@@ -17,46 +17,47 @@ if (acceso !== "MewTrader2025") {
 
 <style>
 :root{--bg:#0b0f13;--card:#121822;--muted:#7b8aa0;--fg:#e8eef7;--accent:#3aa9ff;--accent-2:#7cffb2;--danger:#ff5a7d;--ok:#7dffcf}
-*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#0b0f13 0%,#0d1219 100%);color:var(--fg);display:flex;align-items:center;justify-content:center;padding:24px}
-.app{width:100%;max-width:980px}.title{font-size:clamp(20px,2.6vw,28px);font-weight:800;letter-spacing:.2px;margin:0 0 14px;display:flex;gap:10px;align-items:center}
-.subtitle{color:var(--muted);margin:0 0 22px;font-size:14px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#0b0f13 0%,#0d1219 100%);color:var(--fg);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px}
+header{text-align:center;margin-bottom:30px}
+header h1{font-size:2.6rem;font-weight:900;letter-spacing:1px;margin:0;color:#3aa9ff}
+header img{display:block;margin:20px auto;border-radius:20px;max-width:200px}
+header a{color:#7cffb2;text-decoration:none;font-weight:600}
+.app{width:100%;max-width:980px}
+.title{font-size:clamp(20px,2.6vw,28px);font-weight:800;letter-spacing:.2px;margin:0 0 14px;text-align:center}
+.subtitle{color:var(--muted);margin:0 0 22px;font-size:14px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
 .card{grid-column:span 12;background:linear-gradient(180deg,#0f1520 0%,#0e141d 100%);border:1px solid #1a2230;border-radius:16px;padding:18px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
-@media(min-width:860px){.card.half{grid-column:span 6}}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field{display:flex;flex-direction:column;gap:8px}label{font-size:12px;color:var(--muted);letter-spacing:.3px}
-input[type=number]{appearance:textfield}input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{appearance:none;margin:0}
+@media(min-width:860px){.card.half{grid-column:span 6}}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:8px}
+label{font-size:12px;color:var(--muted);letter-spacing:.3px}
+input[type=number]{appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{appearance:none;margin:0}
 .input{background:#0b111a;border:1px solid #1b2636;border-radius:12px;padding:12px 12px;font-size:14px;color:var(--fg);outline:none;transition:.15s}
-.input:focus{border-color:#2c74ff;box-shadow:0 0 0 3px rgba(60,140,255,.15)}.pair{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
-.tag{font-size:12px;color:#a7b4c9;background:#0f1724;border:1px solid #1a2436;padding:6px 10px;border-radius:999px}
-.weights{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#0c1320;border:1px solid #182235;color:#c6d3e8;border-radius:999px;padding:6px 10px;font-size:12px}
+.input:focus{border-color:#2c74ff;box-shadow:0 0 0 3px rgba(60,140,255,.15)}
+.weights{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:#0c1320;border:1px solid #182235;color:#c6d3e8;border-radius:999px;padding:6px 10px;font-size:12px}
 .result{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px dashed #223049;border-radius:12px;background:linear-gradient(180deg,#0b1119 0%,#0c1118 100%)}
-.res-title{font-size:12px;color:var(--muted)}.res-value{font-variant-numeric:tabular-nums;letter-spacing:.3px;font-weight:700}
-.accent{color:var(--accent)}.good{color:var(--accent-2)}.bad{color:var(--danger)}.footer{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.res-title{font-size:12px;color:var(--muted)}
+.res-value{font-variant-numeric:tabular-nums;letter-spacing:.3px;font-weight:700}
+.accent{color:var(--accent)}.bad{color:var(--danger)}
+.footer{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 button{cursor:pointer;border:1px solid #1b2636;background:#0f1724;color:#dbe6f7;border-radius:12px;padding:10px 14px;font-weight:600;letter-spacing:.2px}
-button:hover{border-color:#2c74ff;box-shadow:0 0 0 3px rgba(60,140,255,.12)}.muted{color:var(--muted)}.mono{font-family:ui-monospace,monospace}
+button:hover{border-color:#2c74ff;box-shadow:0 0 0 3px rgba(60,140,255,.12)}
+.muted{color:var(--muted)}.mono{font-family:ui-monospace,monospace}
 </style>
-
-  
 </head>
 
-<header style="text-align:center;margin-bottom:20px">
-  <h1 style="font-size:2.4rem;font-weight:900;letter-spacing:1px;margin:0;color:#3aa9ff">
-    Mew Trader_ESP
-  </h1>
-  <p style="color:#a0b0c0;font-size:14px;margin:4px 0 14px">
-    Canal oficial en Telegram:<br>
-    <a href="https://t.me/MewTraderESP" target="_blank" style="color:#7cffb2;text-decoration:none">
-      https://t.me/MewTraderESP
-    </a>
-  </p>
-  <img src="qr_telegram.png" alt="QR Telegram Mew Trader" width="180" height="180"
-       style="border-radius:16px;box-shadow:0 0 20px rgba(58,169,255,0.4)">
-</header>
-  
 <body>
+<header>
+  <h1>Mew Trader_ESP</h1>
+  <img src="qr_telegram.png" alt="QR Telegram Mew Trader" width="200" height="200">
+  <p><a href="https://t.me/MewTraderESP" target="_blank">https://t.me/MewTraderESP</a></p>
+</header>
 
-  
 <div class="app">
-  <h1 class="title">Calculadora de Precio Promedio & Stop Loss</h1>
+  <h2 class="title">Calculadora de Precio Promedio & Stop Loss</h2>
   <p class="subtitle">Entradas escalonadas <strong>15% / 30% / 55%</strong>. Calcula precio medio y SL para LONG/SHORT según capital, apalancamiento y riesgo máximo.</p>
   <div class="grid">
     <section class="card half">
@@ -117,6 +118,3 @@ calc();
 </script>
 </body>
 </html>
-
-
-
